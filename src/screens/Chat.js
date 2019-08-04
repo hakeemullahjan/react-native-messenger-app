@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView,ScrollView } from 'react-native';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
 export default class Chat extends React.Component {
@@ -15,51 +21,42 @@ export default class Chat extends React.Component {
     }
 
   }
+  
 
 
   render() {
-
+    const { user } = this.state;
+    console.log('user in chatScreen------->', user)
     return (
-      // <View style={styles.container}>
-      <KeyboardAvoidingView style={styles.container} behavior='padding' enabled >
+      <View style={styles.container}>
 
-        <View style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          // alignItems: 'center',
-        }}>
+          <ScrollView style={{flex:0.9,borderWidth:1}}>
+            
+          </ScrollView>
 
-          <View>
-            {/* <Text>{this.props.navigation.getParam('user')}</Text> */}
-            {/* <Text>{this.state.user.uid}</Text> */}
-          </View>
+          <View style={{ flex:0.1,flexDirection: 'row', padding: 5, }} >
 
-          <View>
-
-          </View>
-
-          <View style={{ flexDirection: 'row', padding: 5, }} >
             <TouchableOpacity style={{ marginTop: 'auto', marginBottom: 'auto', margin: 4 }}>
               <Text style={{ fontSize: 40, fontWeight: 'bold' }}>::</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ marginTop: 'auto', marginBottom: 'auto', margin: 4 }}>
-              <Image source={require('../assets/584abf432912007028bd9337.png')} style={{ width: 35, height: 35 }} />
+              <FontAwesome name='camera' size={30} />
             </TouchableOpacity>
             <TouchableOpacity style={{ marginTop: 'auto', marginBottom: 'auto', margin: 4 }}>
-              <Image source={require('../assets/kisspng-coloring-book-drawing-microsoft-clip-art-photo-gallery-icon-5b17d9c6202c02.0781785115282897341318.jpg')} style={{ width: 35, height: 35 }} />
+              <Ionicons name='md-images' size={37} />
             </TouchableOpacity>
             <TouchableOpacity style={{ marginTop: 'auto', marginBottom: 'auto', margin: 4 }}>
-              <Image source={require('../assets/Artboard_103-512.png')} style={{ width: 35, height: 35 }} />
+              <FontAwesome name='file-audio-o' size={30} />
             </TouchableOpacity>
-
-            <TextInput placeholder='Aa' style={{ fontSize: 15, padding: 4, borderWidth: 1, borderRadius: 30, marginLeft: 'auto', width: '55%', height: 40 }} />
+            <TextInput placeholder='Aa' style={{ fontSize: 15, padding: 4, borderWidth: 1, borderRadius: 30, width: '50%', height: 40,marginTop: 'auto', marginBottom: 'auto', }} />
+            <TouchableOpacity style={{ marginTop: 'auto', marginBottom: 'auto',margin: 4 }} >
+              <Ionicons name='md-send' size={42} />
+            </TouchableOpacity>
           </View>
 
 
         </View>
-        {/* </View> */}
-      </KeyboardAvoidingView>
+     
     );
   }
 
@@ -69,6 +66,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    flexDirection: 'column',
     // alignItems: 'center',
     // justifyContent: 'center',
   },

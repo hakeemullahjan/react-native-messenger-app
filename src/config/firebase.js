@@ -44,7 +44,9 @@ function getAllUsers() {
         db.collection('users').get().then(snap => {
             const users = [];
             snap.forEach(elem => {
-                users.push({ uid: elem.data().uid, displayName: elem.data().displayName, photoURL: elem.data().photoURL })
+                if (auth.currentUser.uid !== elem.data().uid) {
+                    users.push({ uid: elem.data().uid, displayName: elem.data().displayName, photoURL: elem.data().photoURL })
+                }
                 resolve(users)
             })
         })

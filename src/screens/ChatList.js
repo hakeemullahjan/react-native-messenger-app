@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
-import { auth, getAllUsers,createChatRoom } from '../config/firebase'
+import { auth, getAllUsers, createChatRoom } from '../config/firebase'
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -52,7 +52,9 @@ export default class ChatList extends React.Component {
             console.log('return promise resolved data--------->', a.data);
             console.log(a.chatroomID);
             // this.props.history.push(`/chat/${a.chatroomID}`);
-            // this.props.navigation.navigate('Chat', { user: item })
+            let chatroomID = a.chatroomID;
+            item.chatroomID = chatroomID;
+            this.props.navigation.navigate('Chat', { user: item })
         }
         catch (err) {
             console.log('error in creating chatroom', err.message)
