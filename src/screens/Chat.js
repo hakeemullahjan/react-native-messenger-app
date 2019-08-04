@@ -107,6 +107,7 @@ export default class Chat extends React.Component {
                       < View style={{ marginLeft: 'auto', backgroundColor: '#3b5998', margin: '3%', padding: '3%', borderRadius: 15 }}>
                         <Text style={{  color: '#fff',fontWeight:'bold' }}>{item.data.message}</Text>
                         <Text style={{ color: '#fff' }}>{moment(item.data.timestamp).fromNow()}</Text>
+                        
                       </View>
                       :
                       <View style={{ marginRight: 'auto', backgroundColor: '#696969', margin: '3%', padding: '3%', borderRadius: 15 }}>

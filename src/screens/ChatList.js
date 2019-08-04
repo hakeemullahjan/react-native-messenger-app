@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
-import { auth, getAllUsers, createChatRoom } from '../config/firebase'
+import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import { auth, getAllUsers, createChatRoom, db } from '../config/firebase'
+import Story from './Story'
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -27,6 +28,8 @@ export default class ChatList extends React.Component {
         this.state = {
             user: auth.currentUser,
             users: [],
+            stories: [],
+            isStoryRendering: false,
 
         }
         this._createChatRoom = this._createChatRoom.bind(this);
@@ -42,7 +45,45 @@ export default class ChatList extends React.Component {
 
         let a = await getAllUsers();
         console.log('resolved of getAllUsers--------->', a)
+        this._getAllStories();
         this.setState({ users: a })
+
+    }
+
+    async _getAllStories() {
+
+        db.collection('stories').onSnapshot(snapshot => {
+            const stories = [];
+            snapshot.forEach(doc => {
+                // console.log(doc.data())
+                stories.push({ data: doc.data(), id: doc.id })
+            })
+            this.setState({ stories: stories })
+        })
+
+        // db.collection('stories').get().then(snapshot => {
+        //     const stories = [];
+        //     snapshot.forEach(doc => {
+        //         console.log(doc.data())
+        //     })
+        // })
+
+        // db.collection('stories').doc(chatroomID).collection('messages')
+        //     .orderBy('timestamp')
+        //     .onSnapshot(snapshot => {
+        //         const messages = [];
+
+        //         snapshot.forEach(elem => {
+        //             // let key = { data: elem.data(), id: elem.id }
+        //             messages.push({ data: elem.data(), id: elem.id })  // originial
+        //             // messages.push({ key: { data: elem.data(), id: elem.id } })
+        //             // messages.push(key);
+        //         })
+        //         console.log('messages------>', messages)
+
+        //         this.setState({ messages })
+
+        // })
     }
 
 
@@ -64,8 +105,9 @@ export default class ChatList extends React.Component {
 
 
     render() {
-        const { user, users } = this.state;
+        const { user, users, stories, isStoryRendering } = this.state;
         console.log('users in state------>', users)
+
         return (
             <View style={styles.container}>
 
@@ -97,42 +139,29 @@ export default class ChatList extends React.Component {
 
                         <Text>{'\n'}</Text>
                         <ScrollView horizontal>
-                            <TouchableOpacity style={{ margin: 7, alignItems: 'center' }} onPress={() => this.props.navigation.navigate('Cam')}>
+                            <TouchableOpacity style={{ margin: 7, alignItems: 'center' }} onPress={() => this.props.navigation.navigate('Cam', { user: user })}>
                                 <EvilIcons name='plus' size={70} />
                                 <Text  >Your story</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/download.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 1</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/dsfdf.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 2</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/dsfgswqw.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 3</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/images.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 4</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/imag.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 5</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/joker.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 6</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/qwqw.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 7</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ margin: 7, textAlign: 'center' }}>
-                                <Image source={require('../assets/stories/sdd.jpg')} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                                <Text  >Story 8</Text>
-                            </TouchableOpacity>
+
+
+
+                            {!!stories &&
+                                stories.map((item, key) => {
+                                    var str = item.data.displayName;
+                                    var res = str.substring(0, 6);
+                                    var displayName = res;
+                                    return (
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Story',{item:item})} key={key} style={{ margin: 7, textAlign: 'center' }}>
+                                            <Image source={{ uri: item.data.uri }} style={{ width: 60, height: 60, borderRadius: 30 }} />
+                                            <Text >{displayName}</Text>
+                                        </TouchableOpacity>
+                                    );
+                                })
+                            }
+
+
+
                         </ScrollView>
 
 
@@ -170,8 +199,8 @@ export default class ChatList extends React.Component {
             </View>
         );
     }
-
 }
+
 
 const styles = StyleSheet.create({
     container: {

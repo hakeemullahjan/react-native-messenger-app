@@ -6,13 +6,15 @@ import { Alert } from 'react-native'
 
 
 
+
+
 // Your web app's Firebase configuration
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyAs6sTleag2FU6OcTwHGQqPekC9EKOKWoA",
     authDomain: "messenger-app-210.firebaseapp.com",
     databaseURL: "https://messenger-app-210.firebaseio.com",
     projectId: "messenger-app-210",
-    storageBucket: "",
+    storageBucket: "messenger-app-210.appspot.com",
     messagingSenderId: "556224972265",
     appId: "1:556224972265:web:25c5b8e82d2ca2bb"
 };
@@ -104,6 +106,20 @@ function sendMessagesToDB(chatroomID, message) {
     return db.collection('chatrooms').doc(chatroomID).collection('messages').add(obj)
 }
 
+async function addStory(user, image) {
+
+    const response = await fetch(image);
+    const blob = await response.blob();
+    let storyName = image.split(/[\\/]/g).pop().split('.')[0];
+    var ref = storage.ref().child(`stories/${storyName}`);
+
+  
+    return ref.put(blob);
+
+}
+
+
+
 export {
     firebase,
     auth,
@@ -113,4 +129,5 @@ export {
     getAllUsers,
     createChatRoom,
     sendMessagesToDB,
+    addStory,
 }

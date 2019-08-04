@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { Text, View, TouchableOpacity, Image, Alert, ImageBackground, StyleSheet, ActivityIndicator } from 'react-native';
 // import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { ImagePicker, Permissions, Constants } from 'expo';
+import { auth, addStory, storage, db } from '../config/firebase'
 
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,6 +20,8 @@ export default class Cam extends React.Component {
         hasCameraPermission: null,
         type: Camera.Constants.Type.back,
         image: null,
+        user: auth.currentUser,
+        isAddingStory: false,
     };
 
     async componentDidMount() {
@@ -58,9 +61,31 @@ export default class Cam extends React.Component {
         }
     };
 
+    _addStory = async () => {
+        const { image, user } = this.state;
+        this.setState({ isAddingStory: true })
+        console.log(image)
+        let a = await addStory(user, image)
+            .then(() => {
+                console.log('Done!')
+                let storyName = image.split(/[\\/]/g).pop().split('.')[0];
+                storage.ref('stories').child(storyName).getDownloadURL().then(uri => {
+                    console.log('story uri', uri)
+                    db.collection('stories').add({ uri: uri, uid: user.uid, displayName: user.displayName, createdAt: Date.now() }).then(snap => {
+                        this.setState({ isAddingStory: true })
+                        Alert.alert('Story seccessfully added!')
+                        this.props.navigation.navigate('Bottom')
+                    }).catch(err => Alert.alert(err))
+                })
+            }).catch(err => {
+                Alert.alert(err);
+            })
+
+    }
+
 
     render() {
-        const { hasCameraPermission, image } = this.state;
+        const { hasCameraPermission, image, isAddingStory } = this.state;
         if (hasCameraPermission === null) {
             return <View />;
         } else if (hasCameraPermission === false) {
@@ -76,10 +101,15 @@ export default class Cam extends React.Component {
                             </TouchableOpacity>
                         </View>
                         <View>
-                            <Image source={{ uri: image }} style={{ width: '100%', height: 300 }} />
+                            <ImageBackground source={{ uri: image }} style={{ width: '100%', height: 300 }}>
+                                <View style={styles.container}>
+                                    {isAddingStory && <ActivityIndicator size='large' color="#fff" />}
+                                </View>
+                            </ImageBackground>
+                            {/* <Image source={{ uri: image }} style={{ width: '100%', height: 300 }} /> */}
                         </View>
                         <View style={{ margin: 12, alignSelf: 'flex-end' }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={this._addStory}>
                                 <Ionicons name='ios-arrow-dropright-circle' size={70} color='white' />
                             </TouchableOpacity>
                         </View>
@@ -141,3 +171,11 @@ export default class Cam extends React.Component {
 
 
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        // backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+})

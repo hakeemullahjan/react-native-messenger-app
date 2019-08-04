@@ -63,6 +63,12 @@ const AppNavigator = createStackNavigator({
       header: null
     }
   },
+  Story: {
+    screen: Router.Story,
+    navigationOptions: {
+      header: null
+    }
+  }
 
 });
 

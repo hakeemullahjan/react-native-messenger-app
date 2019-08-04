@@ -5,7 +5,7 @@ import People from './People';
 import Discover from './Discover'
 import Cam from './Cam'
 import Gallery from './Gallery';
-
+import Story from './Story'
 
 export{
     Auth,
@@ -14,5 +14,6 @@ export{
     People,
     Discover,
     Cam,
-    Gallery
+    Gallery,
+    Story,
 }
