@@ -93,6 +93,17 @@ function createChatRoom(item) {
 }
 
 
+function sendMessagesToDB(chatroomID, message) {
+    //  console.log('chatroomID--------->',chatroomID)
+    //  console.log('text--------------->',text)
+    const obj = {
+        message,
+        userID: auth.currentUser.uid,
+        timestamp: Date.now(),
+    }
+    return db.collection('chatrooms').doc(chatroomID).collection('messages').add(obj)
+}
+
 export {
     firebase,
     auth,
@@ -101,4 +112,5 @@ export {
     registerUser,
     getAllUsers,
     createChatRoom,
+    sendMessagesToDB,
 }
