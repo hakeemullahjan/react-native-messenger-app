@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "^33.0.0",
+    "expo": "^46.0.16",
     "expo-camera": "~5.0.1",
     "expo-facebook": "~5.0.1",
     "expo-image-picker": "~5.0.2",
